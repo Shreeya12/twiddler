@@ -1,27 +1,79 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="jquery.js"></script>
-    <script src="data_generator.js"></script>
-  </head>
-  <body>
-    <script>
+ 
+  <script src="data_generator.js"></script>
+  <script src="jquery.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
 
+  </head>
+
+  <body>
+  	<h1 class='title'> Welcome to Twittler</h1>
+    <div class='container'>
+ 
+    <div class='tweets'>
+    	   
+      <section class ='second'>
+      </section>
+      <section class ='third'>
+      </section>
+    </div>
+
+    <script>
       $(document).ready(function(){
         var $body = $('body');
-        $body.html('');
+        // $body.html('');
 
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
+
+          var $tweet = $('<div class=tweet></div>');
+          var $user = $('<p class=user></p>');
+          var $messageAndDate = $('<p></p>');
+         
+        
+          $user.attr('data-user', tweet.user).text('@' + tweet.user + ' ').appendTo($tweet);
+          $messageAndDate.text(tweet.message + tweet.created_at).appendTo($tweet);
+
+          $tweet.appendTo(".second");
           index -= 1;
         }
+        // button for getting new tweets
+        var $button = $("<input class='button click' type=button value='Check New Tweet'>");
+        $button.appendTo($body);
+        $button.on('click', function () {
+          scheduleNextTweet();
+          var newTweet = streams.home.pop();
 
+          var $newTweet = $('<div class=tweet></div>');
+          var $newUser = $('<p class=user></p>');
+         var $newMessageAndDate = $('<p></p>');
+        
+          $newUser.attr('data-user', newTweet.user).text('@' + newTweet.user + ' ').appendTo($newTweet);
+          $newMessageAndDate.text(tweet.message + tweet.created_at).appendTo($newTweet);
+          $newTweet.appendTo('.third');
+        });
+        
+        // click user and user's timeline
+        $('.tweets').on('click', ' .tweet .user', function(){
+          event.preventDefault();
+          var user = $(this).data('user');
+          $('.timeline').hide();
+          var $timeline = $('<h1 class=timeline>'+ user[0].toUpperCase() + user.slice(1, user.length-1) +'\'s Timeline</h1>');
+          $timeline.prependTo('.tweets');
+          //hide the button
+          $('.click').hide();
+        
+          $('.tweet').not("div:contains('" + user + "')").hide();
+          
+        });
+          
       });
 
     </script>
+    </div>
   </body>
 </html>
+
